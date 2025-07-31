@@ -28,6 +28,13 @@ public class DatabaseManager {
         dataSource.setJdbcUrl("jdbc:mysql://" + host + ":" + port + "/" + dbName + "?useSSL=false&allowPublicKeyRetrieval=true");
         dataSource.setUsername(user);
         dataSource.setPassword(pass);
+
+        // --- ส่วนที่เพิ่มเข้ามาเพื่อแก้ปัญหา Warning และเพิ่มประสิทธิภาพ ---
+        dataSource.setMaxLifetime(1800000); // 30 minutes
+        dataSource.setKeepaliveTime(30000); // 30 seconds
+        dataSource.setConnectionTimeout(10000); // 10 seconds
+        // ----------------------------------------------------
+
         dataSource.addDataSourceProperty("cachePrepStmts", "true");
         dataSource.addDataSourceProperty("prepStmtCacheSize", "250");
         dataSource.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
