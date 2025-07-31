@@ -1,0 +1,80 @@
+# BsruEnderchest v1.0 Configuration
+
+# ---------------------------------
+# Database Settings
+# ---------------------------------
+database:
+  enable: false
+  host: "localhost"
+  port: 3306
+  database: "bsru_enderchest"
+  username: "bsru_user"
+  password: "password"
+
+# ---------------------------------
+# Inventory Titles
+# ---------------------------------
+inventory-title-format: "&8Ender Chest (หน้า {current_page}/{max_pages})"
+single-page-title: "&8Ender Chest"
+admin-single-page-title: "&cAdmin View: &e{player_name}"
+admin-inventory-title-format: "&cAdmin View: &e{player_name} &8(&fหน้า {current_page}/{max_pages}&8)"
+
+# ---------------------------------
+# Messages
+# ---------------------------------
+no-permission-command-message: "&cคุณไม่มีสิทธิ์ใช้คำสั่งนี้"
+worldguard-drop-deny-message: "&cคุณไม่สามารถทิ้งของในบริเวณนี้ได้"
+# << เพิ่ม: ข้อความแจ้งเตือน "ผู้เล่น" เมื่อฐานข้อมูลมีปัญหา
+player-database-error-message: "&c[Enderchest] ระบบมีปัญหาชั่วคราว กรุณาลองอีกครั้ง"
+# ข้อความแจ้งเตือน "แอดมิน"
+admin-database-error-message: "&c&l[BSRU Enderchest] &cCRITICAL: ไม่สามารถเชื่อมต่อฐานข้อมูลได้! กรุณาตรวจสอบ Console ด่วน"
+
+# ---------------------------------
+# Control Panel Items
+# ---------------------------------
+control-panel:
+  previous-page:
+    enabled:
+      material: "MAGMA_CREAM"
+      name: "&a&lหน้าก่อนหน้า"
+      lore:
+        - "&7คลิกเพื่อไปยังหน้า &e{previous_page}"
+    disabled:
+      material: "BARRIER"
+      name: "&c&lหน้าแรก"
+      lore:
+        - "&7คุณอยู่ที่หน้าแรกแล้ว"
+  next-page:
+    enabled:
+      material: "ARROW"
+      name: "&a&lหน้าถัดไป"
+      lore:
+        - "&7คลิกเพื่อไปยังหน้า &e{next_page}"
+    disabled:
+      material: "BARRIER"
+      name: "&c&lหน้าสุดท้าย"
+      lore:
+        - "&7คุณอยู่ที่หน้าสุดท้ายแล้ว"
+  filler:
+    material: "GRAY_STAINED_GLASS_PANE"
+    name: " "
+
+# ---------------------------------
+# Sounds
+# ---------------------------------
+# name: ชื่อเสียงจาก Minecraft (https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Sound.html)
+# volume: ระดับความดัง (แนะนำ 0.5 - 1.0)
+# pitch: ระดับความสูง-ต่ำของเสียง (แนะนำ 0.8 - 1.5)
+sounds:
+  navigate:
+    name: "ui.button.click"
+    volume: 0.8
+    pitch: 1.2
+  fail:
+    name: "block.anvil.place"
+    volume: 0.5
+    pitch: 1.5
+  worldguard-deny:
+    name: "entity.villager.no"
+    volume: 0.5
+    pitch: 0.9

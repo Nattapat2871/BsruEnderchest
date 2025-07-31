@@ -1,0 +1,38 @@
+name: BsruEnderchest
+version: 1.0
+main: com.bsruEnderchest.BsruEnderchest
+api-version: '1.21'
+folia-supported: true
+softdepend: [LuckPerms, WorldGuard]
+author: Nattapat2871
+description: A multi-page ender chest plugin with file and database support.
+
+permissions:
+  bsruenderchest.use:
+    description: Allows opening a 1-page Ender Chest.
+    default: true
+  bsruenderchest.plus.*:
+    description: Grants access to X number of pages.
+    default: op
+    children:
+      bsruenderchest.plus.2: true
+      bsruenderchest.plus.5: true
+      bsruenderchest.plus.10: true
+  bsruenderchest.admin.notify:
+    description: Receives notifications about database errors.
+    default: op
+  bsruenderchest.admin.reload:
+    description: Allows usage of the reload command.
+    default: op
+  bsruenderchest.admin.chestsee: # << เพิ่ม
+    description: Allows opening other players' ender chests.
+    default: op
+
+commands:
+  enderchest:
+    description: Opens your Ender Chest.
+    usage: /<command>
+  bsruenderchest:
+    description: Main command for BsruEnderchest.
+    usage: /<command> <reload|chestsee>
+    permission: bsruenderchest.admin.reload

@@ -1,0 +1,43 @@
+# Build output
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+build/
+.gradle/
+
+# IDE files
+# IntelliJ
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# Eclipse
+.classpath
+.project
+.settings/
+bin/
+
+# NetBeans
+nbproject/
+dist/
+build.xml
+
+# VS Code
+.vscode/
+
+# Log files
+*.log
+logs/
+
+# Operating System Files
+.DS_Store
+Thumbs.db
+
+# Secrets
+*.env
