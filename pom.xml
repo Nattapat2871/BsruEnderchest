@@ -6,7 +6,8 @@
 
     <groupId>com.bsruEnderchest</groupId>
     <artifactId>BsruEnderchest</artifactId>
-    <version>1.0</version> <packaging>jar</packaging>
+    <version>1.1</version>
+    <packaging>jar</packaging>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
