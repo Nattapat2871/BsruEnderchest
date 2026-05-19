@@ -1,7 +1,7 @@
 name: BsruEnderchest
-version: 1.0
+version: 1.1
 main: com.bsruEnderchest.BsruEnderchest
-api-version: '1.21'
+api-version: '1.20'
 folia-supported: true
 softdepend: [LuckPerms, WorldGuard]
 author: Nattapat2871

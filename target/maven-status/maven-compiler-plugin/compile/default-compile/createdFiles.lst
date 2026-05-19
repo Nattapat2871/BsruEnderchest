@@ -1,6 +1,7 @@
-com\bsruEnderchest\BsruEnderchest$2.class
-com\bsruEnderchest\hooks\LuckPermsHook.class
-com\bsruEnderchest\BsruEnderchest.class
-com\bsruEnderchest\hooks\WorldGuardHook.class
-com\bsruEnderchest\BsruEnderchest$1.class
-com\bsruEnderchest\DatabaseManager.class
+com/bsruEnderchest/hooks/LuckPermsHook.class
+com/bsruEnderchest/EnderchestHolder.class
+com/bsruEnderchest/BsruEnderchest.class
+com/bsruEnderchest/BsruEnderchest$2.class
+com/bsruEnderchest/DatabaseManager.class
+com/bsruEnderchest/hooks/WorldGuardHook.class
+com/bsruEnderchest/BsruEnderchest$1.class

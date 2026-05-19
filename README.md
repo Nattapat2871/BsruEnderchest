@@ -16,7 +16,11 @@
 
 BsruEnderchest is a premium, high-performance Ender Chest plugin for Spigot, Paper, and **Folia** servers. It enhances the vanilla Ender Chest with more storage, multiple pages, cross-server synchronization via MySQL, and a powerful suite of admin tools, all designed to be lag-free.
 
-## ✨ Features
+## 🌟 Modern Support
+- **Minecraft 1.20, 1.21, and 26.1.x (2026 Drops)**
+- **Java 21 to Java 25+**
+- **Native Folia Support**
+- **Adventure Component API Integration**
 
 - **Expanded Storage:** Expands the default Ender Chest to a full 6 rows (54 slots).
 - **Paged System:** Grant players access to multiple pages of storage based on permissions.

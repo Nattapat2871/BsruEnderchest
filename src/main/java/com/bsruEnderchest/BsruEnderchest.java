@@ -2,6 +2,10 @@ package com.bsruEnderchest;
 
 import com.bsruEnderchest.hooks.LuckPermsHook;
 import com.bsruEnderchest.hooks.WorldGuardHook;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
@@ -50,11 +54,16 @@ public final class BsruEnderchest extends JavaPlugin implements Listener, Comman
     private boolean useDatabase;
     private DatabaseManager databaseManager;
 
-    private String titleFormat, baseTitleCheck, singlePageTitle, noPermsMsg, adminTitleFormat, adminBaseTitleCheck;
+    private String titleFormat, singlePageTitle, noPermsMsg, adminTitleFormat;
     private String playerDbErrorMessage, adminDbErrorMessage, adminSinglePageTitle, wgDropDenyMessage;
     private Sound soundNavigate, soundFail, soundWgDeny;
     private float navigateVolume, navigatePitch, failVolume, failPitch, wgDenyVolume, wgDenyPitch;
     private ItemStack prevPageEnabled, prevPageDisabled, nextPageEnabled, nextPageDisabled, fillerItem;
+
+    public static Component color(String text) {
+        if (text == null) return Component.empty();
+        return LegacyComponentSerializer.legacyAmpersand().deserialize(text);
+    }
 
     @Override
     public void onEnable() {
@@ -69,20 +78,20 @@ public final class BsruEnderchest extends JavaPlugin implements Listener, Comman
         loadConfigValues();
         setupDatabaseConnection();
 
-        String luckPermsStatus;
+        Component luckPermsStatus;
         if (getServer().getPluginManager().getPlugin("LuckPerms") != null) {
             this.luckPermsHook = new LuckPermsHook(getLogger());
-            luckPermsStatus = ChatColor.GREEN + "Enabled";
+            luckPermsStatus = Component.text("Enabled", NamedTextColor.GREEN);
         } else {
-            luckPermsStatus = ChatColor.GRAY + "Disabled (LuckPerms not found)";
+            luckPermsStatus = Component.text("Disabled (LuckPerms not found)", NamedTextColor.GRAY);
         }
 
-        String worldGuardStatus;
+        Component worldGuardStatus;
         if (getServer().getPluginManager().getPlugin("WorldGuard") != null) {
             this.worldGuardHook = new WorldGuardHook();
-            worldGuardStatus = ChatColor.GREEN + "Enabled";
+            worldGuardStatus = Component.text("Enabled", NamedTextColor.GREEN);
         } else {
-            worldGuardStatus = ChatColor.GRAY + "Disabled (WorldGuard not found)";
+            worldGuardStatus = Component.text("Disabled (WorldGuard not found)", NamedTextColor.GRAY);
         }
 
         getServer().getPluginManager().registerEvents(this, this);
@@ -94,13 +103,13 @@ public final class BsruEnderchest extends JavaPlugin implements Listener, Comman
         String serverVersion = Bukkit.getBukkitVersion().split("-")[0];
         CommandSender console = Bukkit.getConsoleSender();
 
-        console.sendMessage(ChatColor.YELLOW + "------------------------------------------");
-        console.sendMessage(ChatColor.GOLD + " BsruEnderchest v" + this.getDescription().getVersion() + ChatColor.WHITE + " by " + ChatColor.LIGHT_PURPLE + "Nattapat2871");
-        console.sendMessage(ChatColor.BLUE + " LuckPerms Hook: " + luckPermsStatus);
-        console.sendMessage(ChatColor.AQUA + " WorldGuard Hook: " + worldGuardStatus);
-        console.sendMessage(ChatColor.WHITE + " Successfully enabled on " + ChatColor.YELLOW + serverType + " " + serverVersion);
-        console.sendMessage(ChatColor.GRAY + " GitHub " + ChatColor.DARK_BLUE + "https://github.com/Nattapat2871/BsruEnderchest");
-        console.sendMessage(ChatColor.YELLOW + "------------------------------------------");
+        console.sendMessage(color("&e------------------------------------------"));
+        console.sendMessage(color("&6 &lBsruEnderchest &ev" + this.getPluginMeta().getVersion() + " &fby &d&lNattapat2871"));
+        console.sendMessage(Component.text(" LuckPerms Hook: ").color(NamedTextColor.BLUE).append(luckPermsStatus));
+        console.sendMessage(Component.text(" WorldGuard Hook: ").color(NamedTextColor.AQUA).append(worldGuardStatus));
+        console.sendMessage(color("&f Successfully enabled on &e" + serverType + " " + serverVersion));
+        console.sendMessage(color("&7 GitHub &1https://github.com/Nattapat2871/BsruEnderchest"));
+        console.sendMessage(color("&e------------------------------------------"));
     }
 
     @Override
@@ -150,41 +159,41 @@ public final class BsruEnderchest extends JavaPlugin implements Listener, Comman
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (command.getName().equalsIgnoreCase("bsruenderchest")) {
             if (args.length == 0) {
-                sender.sendMessage(ChatColor.GRAY + "----------------------------------");
-                sender.sendMessage(ChatColor.GOLD + "" + ChatColor.BOLD + "BsruEnderchest " + ChatColor.YELLOW + "v" + this.getDescription().getVersion());
-                sender.sendMessage(ChatColor.WHITE + "ผู้สร้าง: " + ChatColor.AQUA + "Nattapat2871");
-                sender.sendMessage("");
-                sender.sendMessage(ChatColor.GRAY + "ปลั๊กอิน Ender Chest หลายหน้าพร้อมระบบฐานข้อมูล");
-                sender.sendMessage(ChatColor.DARK_AQUA + "GitHub: " + ChatColor.GRAY + "https://github.com/Nattapat2871/BsruEnderchest");
-                sender.sendMessage(ChatColor.GRAY + "----------------------------------");
+                sender.sendMessage(color("&7----------------------------------"));
+                sender.sendMessage(color("&6&lBsruEnderchest &ev" + this.getPluginMeta().getVersion()));
+                sender.sendMessage(color("&fผู้สร้าง: &bNattapat2871"));
+                sender.sendMessage(Component.empty());
+                sender.sendMessage(color("&7ปลั๊กอิน Ender Chest หลายหน้าพร้อมระบบฐานข้อมูล"));
+                sender.sendMessage(color("&3GitHub: &7https://github.com/Nattapat2871/BsruEnderchest"));
+                sender.sendMessage(color("&7----------------------------------"));
                 return true;
             }
             if (args[0].equalsIgnoreCase("reload")) {
                 if (!sender.hasPermission("bsruenderchest.admin.reload")) {
-                    sender.sendMessage(noPermsMsg);
+                    sender.sendMessage(color(noPermsMsg));
                     return true;
                 }
                 reloadPluginConfig();
-                sender.sendMessage(ChatColor.GREEN + "[BsruEnderchest] Configuration reloaded.");
+                sender.sendMessage(color("&a[BsruEnderchest] Configuration reloaded."));
                 return true;
             }
             if (args[0].equalsIgnoreCase("chestsee")) {
                 if (!(sender instanceof Player admin)) {
-                    sender.sendMessage("This command can only be used by a player.");
+                    sender.sendMessage(Component.text("This command can only be used by a player."));
                     return true;
                 }
                 if (!admin.hasPermission("bsruenderchest.admin.chestsee")) {
-                    admin.sendMessage(noPermsMsg);
+                    admin.sendMessage(color(noPermsMsg));
                     return true;
                 }
                 if (args.length < 2) {
-                    admin.sendMessage(ChatColor.RED + "Usage: /bsruenderchest chestsee <player>");
+                    admin.sendMessage(Component.text("Usage: /bsruenderchest chestsee <player>").color(NamedTextColor.RED));
                     return true;
                 }
                 OfflinePlayer target = Bukkit.getOfflinePlayer(args[1]);
                 try {
                     if (!hasData(target.getUniqueId())) {
-                        admin.sendMessage(ChatColor.RED + "No Ender Chest data found for player '" + args[1] + "'.");
+                        admin.sendMessage(Component.text("No Ender Chest data found for player '" + args[1] + "'.").color(NamedTextColor.RED));
                         return true;
                     }
                 } catch (SQLException e) {
@@ -199,18 +208,18 @@ public final class BsruEnderchest extends JavaPlugin implements Listener, Comman
         }
         if (command.getName().equalsIgnoreCase("enderchest")) {
             if (!(sender instanceof Player player)) {
-                sender.sendMessage("This command is for players only.");
+                sender.sendMessage(Component.text("This command is for players only."));
                 return true;
             }
             if (!player.hasPermission("bsruenderchest.command.use")) {
-                player.sendMessage(noPermsMsg);
+                player.sendMessage(color(noPermsMsg));
                 return true;
             }
             if (getMaxPages(player) > 0) {
                 player.playSound(player.getLocation(), Sound.BLOCK_ENDER_CHEST_OPEN, 0.8f, 1.0f);
                 openInventoryForPlayer(player);
             } else {
-                player.sendMessage(noPermsMsg);
+                player.sendMessage(color(noPermsMsg));
             }
             return true;
         }
@@ -239,6 +248,7 @@ public final class BsruEnderchest extends JavaPlugin implements Listener, Comman
     private void openInventoryForPlayer(Player player) {
         UUID targetUUID = adminViewingMap.getOrDefault(player.getUniqueId(), player.getUniqueId());
         OfflinePlayer targetPlayer = Bukkit.getOfflinePlayer(targetUUID);
+        boolean isAdmin = adminViewingMap.containsKey(player.getUniqueId());
         runTaskAsync(() -> {
             try {
                 if (useDatabase && (databaseManager == null || !databaseManager.isConnected())) {
@@ -247,8 +257,8 @@ public final class BsruEnderchest extends JavaPlugin implements Listener, Comman
                 int maxPages = getMaxPages(targetPlayer);
                 if (maxPages == 0) {
                     runTaskOnCorrectThread(player, () -> {
-                        if (adminViewingMap.containsKey(player.getUniqueId())) {
-                            player.sendMessage(ChatColor.RED + "No Ender Chest data found for player '" + targetPlayer.getName() + "'.");
+                        if (isAdmin) {
+                            player.sendMessage(Component.text("No Ender Chest data found for player '" + targetPlayer.getName() + "'.").color(NamedTextColor.RED));
                         } else {
                             player.openInventory(player.getEnderChest());
                         }
@@ -258,13 +268,13 @@ public final class BsruEnderchest extends JavaPlugin implements Listener, Comman
                 if (maxPages == 1) {
                     ItemStack[] items = loadSinglePageData(targetUUID);
                     runTaskOnCorrectThread(player, () -> {
-                        String title;
-                        if (adminViewingMap.containsKey(player.getUniqueId())) {
-                            title = adminSinglePageTitle.replace("{player_name}", Objects.toString(targetPlayer.getName(), "Unknown"));
+                        String titleStr;
+                        if (isAdmin) {
+                            titleStr = adminSinglePageTitle.replace("{player_name}", Objects.toString(targetPlayer.getName(), "Unknown"));
                         } else {
-                            title = singlePageTitle;
+                            titleStr = singlePageTitle;
                         }
-                        Inventory inv = Bukkit.createInventory(null, 54, title);
+                        Inventory inv = Bukkit.createInventory(new EnderchestHolder(targetUUID, 1, isAdmin), 54, color(titleStr));
                         if (items != null) inv.setContents(items);
                         player.openInventory(inv);
                     });
@@ -284,12 +294,12 @@ public final class BsruEnderchest extends JavaPlugin implements Listener, Comman
         e.printStackTrace();
         runTaskOnCorrectThread(player, () -> {
             if (player != null && player.isOnline()) {
-                player.sendMessage(playerDbErrorMessage);
+                player.sendMessage(color(playerDbErrorMessage));
                 player.playSound(player.getLocation(), soundFail, failVolume, failPitch);
             }
             for (Player admin : Bukkit.getOnlinePlayers()) {
                 if (admin.hasPermission("bsruenderchest.admin.notify")) {
-                    admin.sendMessage(adminDbErrorMessage);
+                    admin.sendMessage(color(adminDbErrorMessage));
                 }
             }
         });
@@ -325,16 +335,17 @@ public final class BsruEnderchest extends JavaPlugin implements Listener, Comman
         int maxPages = getMaxPages(targetPlayer);
         if (page > maxPages) page = maxPages;
         if (page < 1) page = 1;
-        String title;
-        if (adminViewingMap.containsKey(adminOrPlayer.getUniqueId())) {
-            title = adminTitleFormat.replace("{player_name}", Objects.toString(targetPlayer.getName(), "Unknown"))
+        boolean isAdmin = adminViewingMap.containsKey(adminOrPlayer.getUniqueId());
+        String titleStr;
+        if (isAdmin) {
+            titleStr = adminTitleFormat.replace("{player_name}", Objects.toString(targetPlayer.getName(), "Unknown"))
                     .replace("{current_page}", String.valueOf(page))
                     .replace("{max_pages}", String.valueOf(maxPages));
         } else {
-            title = titleFormat.replace("{current_page}", String.valueOf(page))
+            titleStr = titleFormat.replace("{current_page}", String.valueOf(page))
                     .replace("{max_pages}", String.valueOf(maxPages));
         }
-        Inventory inv = Bukkit.createInventory(null, 54, title);
+        Inventory inv = Bukkit.createInventory(new EnderchestHolder(targetPlayer.getUniqueId(), page, isAdmin), 54, color(titleStr));
         if (items != null) {
             ItemStack[] sizedItems = new ItemStack[45];
             System.arraycopy(items, 0, sizedItems, 0, Math.min(items.length, 45));
@@ -363,17 +374,12 @@ public final class BsruEnderchest extends JavaPlugin implements Listener, Comman
 
     @EventHandler(priority = EventPriority.LOW)
     public void onInventoryClick(InventoryClickEvent event) {
+        if (!(event.getInventory().getHolder() instanceof EnderchestHolder holder)) return;
+
         Player player = (Player) event.getWhoClicked();
-        String inventoryTitle = event.getView().getTitle();
-        boolean isAdminView = adminViewingMap.containsKey(player.getUniqueId());
-        UUID targetUUID = adminViewingMap.getOrDefault(player.getUniqueId(), player.getUniqueId());
+        boolean isAdminView = holder.isAdminView();
+        UUID targetUUID = holder.getOwnerUUID();
         OfflinePlayer targetPlayer = Bukkit.getOfflinePlayer(targetUUID);
-        String expectedAdminSingleTitle = isAdminView ? adminSinglePageTitle.replace("{player_name}", Objects.toString(targetPlayer.getName(), "Unknown")) : "";
-
-        boolean isSinglePageView = inventoryTitle.equals(singlePageTitle) || inventoryTitle.equals(expectedAdminSingleTitle);
-        boolean isPagedView = inventoryTitle.startsWith(baseTitleCheck) || (isAdminView && inventoryTitle.startsWith(adminBaseTitleCheck));
-
-        if (!isSinglePageView && !isPagedView) return;
 
         boolean isDroppingItem = event.getClick().equals(ClickType.DROP) || event.getClick().equals(ClickType.CONTROL_DROP);
         boolean isDraggingOut = event.getSlot() == -999 && event.getCursor() != null && event.getCursor().getType() != Material.AIR;
@@ -382,15 +388,16 @@ public final class BsruEnderchest extends JavaPlugin implements Listener, Comman
             if (worldGuardHook != null) {
                 if (!worldGuardHook.canDropItems(player)) {
                     event.setCancelled(true);
-                    player.sendMessage(wgDropDenyMessage);
+                    player.sendMessage(color(wgDropDenyMessage));
                     player.playSound(player.getLocation(), soundWgDeny, wgDenyVolume, wgDenyPitch);
                     return;
                 }
             }
         }
 
-        if (isSinglePageView) return;
-
+        // หากเป็น Single Page (6 Rows) หรือถ้าเราคลิกในส่วนของ Inventory ผู้เล่นเอง (ด้านล่าง)
+        // เราจะไม่ดักการคลิกปุ่ม Control Panel เพราะ Single Page ไม่มี Control Panel
+        // และ Inventory ด้านล่างก็คลิกได้ปกติ
         if (event.getClickedInventory() != event.getView().getTopInventory()) {
             return;
         }
@@ -398,9 +405,13 @@ public final class BsruEnderchest extends JavaPlugin implements Listener, Comman
         int slot = event.getSlot();
         if (slot < 45) return;
 
-        event.setCancelled(true);
-        int currentPage = playerCurrentPage.getOrDefault(player.getUniqueId(), 1);
+        // ในกรณีที่เป็น Multi-page เราจะดักการคลิกปุ่ม Navigation (slot 45-53)
+        // แต่ต้องเช็คก่อนว่าผู้เล่นมีสิทธิ์เข้าถึงหลายหน้าไหม (หรือเป็นแอดมิน)
         int maxPages = getMaxPages(targetPlayer);
+        if (maxPages <= 1) return; // ถ้ามีหน้าเดียว ไม่ต้องดัก Navigation (ปกติปุ่มจะไม่ถูกเซ็ตอยู่แล้ว)
+
+        event.setCancelled(true);
+        int currentPage = holder.getPage();
 
         if (slot == 45) {
             if (currentPage > 1) {
@@ -439,6 +450,8 @@ public final class BsruEnderchest extends JavaPlugin implements Listener, Comman
 
     @EventHandler
     public void onInventoryClose(InventoryCloseEvent event) {
+        if (!(event.getInventory().getHolder() instanceof EnderchestHolder holder)) return;
+
         Player player = (Player) event.getPlayer();
         UUID playerUUID = player.getUniqueId();
         int lockCount = navigationLock.getOrDefault(playerUUID, 0);
@@ -446,37 +459,32 @@ public final class BsruEnderchest extends JavaPlugin implements Listener, Comman
             navigationLock.put(playerUUID, lockCount - 1);
             return;
         }
-        String inventoryTitle = event.getView().getTitle();
-        boolean wasAdminViewing = adminViewingMap.containsKey(playerUUID);
-        UUID targetUUID = adminViewingMap.getOrDefault(playerUUID, playerUUID);
+
+        UUID targetUUID = holder.getOwnerUUID();
         OfflinePlayer targetPlayer = Bukkit.getOfflinePlayer(targetUUID);
-        String expectedAdminSingleTitle = wasAdminViewing ? adminSinglePageTitle.replace("{player_name}", Objects.toString(targetPlayer.getName(), "Unknown")) : "";
-
-        boolean isSinglePageView = inventoryTitle.equals(singlePageTitle) || inventoryTitle.equals(expectedAdminSingleTitle);
-        boolean isPagedView = inventoryTitle.startsWith(baseTitleCheck) || (wasAdminViewing && inventoryTitle.startsWith(adminBaseTitleCheck));
-
-        if (!isSinglePageView && !isPagedView) return;
+        int page = holder.getPage();
+        boolean isAdminView = holder.isAdminView();
 
         adminViewingMap.remove(playerUUID);
         boolean openedByBlock = openedPhysicalChests.containsKey(playerUUID);
-        if (isSinglePageView) {
+
+        int maxPages = getMaxPages(targetPlayer);
+        if (maxPages <= 1) {
             saveSinglePageData(targetUUID, event.getInventory().getContents());
-        } else if (isPagedView) {
-            if (playerCurrentPage.containsKey(playerUUID)) {
-                int page = playerCurrentPage.get(playerUUID);
-                ItemStack[] items = Arrays.copyOfRange(event.getInventory().getContents(), 0, 45);
-                savePagedData(targetUUID, page, items);
-                playerCurrentPage.remove(playerUUID);
-            }
+        } else {
+            ItemStack[] items = Arrays.copyOfRange(event.getInventory().getContents(), 0, 45);
+            savePagedData(targetUUID, page, items);
+            playerCurrentPage.remove(playerUUID);
         }
+
         if (!openedByBlock) {
             player.playSound(player.getLocation(), Sound.BLOCK_ENDER_CHEST_CLOSE, 0.8f, 1.0f);
         }
         if (openedPhysicalChests.containsKey(playerUUID)) {
             Location chestLoc = openedPhysicalChests.remove(playerUUID);
             Block chestBlock = chestLoc.getBlock();
-            if (chestBlock.getType() == Material.ENDER_CHEST && chestBlock.getState() instanceof org.bukkit.block.EnderChest) {
-                ((org.bukkit.block.EnderChest) chestBlock.getState()).close();
+            if (chestBlock.getType() == Material.ENDER_CHEST && chestBlock.getState() instanceof org.bukkit.block.EnderChest ec) {
+                ec.close();
             }
         }
     }
@@ -657,23 +665,14 @@ public final class BsruEnderchest extends JavaPlugin implements Listener, Comman
     private void loadConfigValues() {
         FileConfiguration config = getConfig();
         useDatabase = config.getBoolean("database.enable", false);
-        playerDbErrorMessage = ChatColor.translateAlternateColorCodes('&', config.getString("player-database-error-message", "&c[Enderchest] ระบบมีปัญหาชั่วคราว"));
-        adminDbErrorMessage = ChatColor.translateAlternateColorCodes('&', config.getString("admin-database-error-message", "&c&l[BSRU Enderchest] &cCRITICAL: Database connection failed!"));
-        titleFormat = ChatColor.translateAlternateColorCodes('&', config.getString("inventory-title-format", "&5Ender Chest ({current_page}/{max_pages})"));
-
-        int placeholderIndex = titleFormat.indexOf("{");
-        baseTitleCheck = (placeholderIndex != -1) ? titleFormat.substring(0, placeholderIndex) : titleFormat;
-
-        singlePageTitle = ChatColor.translateAlternateColorCodes('&', config.getString("single-page-title", "&5&lEnder Chest (6 Rows)"));
-
-        adminTitleFormat = ChatColor.translateAlternateColorCodes('&', config.getString("admin-inventory-title-format", "&cAdmin View: {player_name} ({current_page}/{max_pages})"));
-        int adminPlaceholderIndex = adminTitleFormat.indexOf("{");
-        adminBaseTitleCheck = (adminPlaceholderIndex != -1) ? adminTitleFormat.substring(0, adminPlaceholderIndex) : adminTitleFormat;
-
-        adminSinglePageTitle = ChatColor.translateAlternateColorCodes('&', config.getString("admin-single-page-title", "&cAdmin View: {player_name} (6 Rows)"));
-        wgDropDenyMessage = ChatColor.translateAlternateColorCodes('&', config.getString("worldguard-drop-deny-message", "&cคุณไม่สามารถทิ้งของในบริเวณนี้ได้"));
-
-        noPermsMsg = ChatColor.translateAlternateColorCodes('&', config.getString("no-permission-command-message", "&cYou don't have permission."));
+        playerDbErrorMessage = config.getString("player-database-error-message", "&c[Enderchest] ระบบมีปัญหาชั่วคราว");
+        adminDbErrorMessage = config.getString("admin-database-error-message", "&c&l[BSRU Enderchest] &cCRITICAL: Database connection failed!");
+        titleFormat = config.getString("inventory-title-format", "&5Ender Chest ({current_page}/{max_pages})");
+        singlePageTitle = config.getString("single-page-title", "&5&lEnder Chest (6 Rows)");
+        adminTitleFormat = config.getString("admin-inventory-title-format", "&cAdmin View: {player_name} ({current_page}/{max_pages})");
+        adminSinglePageTitle = config.getString("admin-single-page-title", "&cAdmin View: {player_name} (6 Rows)");
+        wgDropDenyMessage = config.getString("worldguard-drop-deny-message", "&cคุณไม่สามารถทิ้งของในบริเวณนี้ได้");
+        noPermsMsg = config.getString("no-permission-command-message", "&cYou don't have permission.");
 
         try {
             String navigateKey = config.getString("sounds.navigate.name", "ui.button.click").toLowerCase().replace('_', '.');
@@ -730,9 +729,9 @@ public final class BsruEnderchest extends JavaPlugin implements Listener, Comman
         ItemStack item = new ItemStack(mat);
         ItemMeta meta = item.getItemMeta();
         if (meta != null) {
-            meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', section.getString("name", " ")));
-            List<String> lore = section.getStringList("lore").stream().map(line -> ChatColor.translateAlternateColorCodes('&', line)).collect(Collectors.toList());
-            meta.setLore(lore);
+            meta.displayName(color(section.getString("name", " ")));
+            List<Component> lore = section.getStringList("lore").stream().map(BsruEnderchest::color).collect(Collectors.toList());
+            meta.lore(lore);
             meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
             item.setItemMeta(meta);
         }
@@ -745,10 +744,17 @@ public final class BsruEnderchest extends JavaPlugin implements Listener, Comman
             int prevPage = currentPage - 1;
             int nextPage = currentPage + 1;
             if (meta.hasDisplayName()) {
-                meta.setDisplayName(meta.getDisplayName().replace("{previous_page}", String.valueOf(prevPage)).replace("{current_page}", String.valueOf(currentPage)).replace("{next_page}", String.valueOf(nextPage)).replace("{max_pages}", String.valueOf(maxPages)));
+                String name = PlainTextComponentSerializer.plainText().serialize(meta.displayName());
+                meta.displayName(color(name.replace("{previous_page}", String.valueOf(prevPage)).replace("{current_page}", String.valueOf(currentPage)).replace("{next_page}", String.valueOf(nextPage)).replace("{max_pages}", String.valueOf(maxPages))));
             }
             if (meta.hasLore()) {
-                meta.setLore(meta.getLore().stream().map(line -> line.replace("{previous_page}", String.valueOf(prevPage)).replace("{current_page}", String.valueOf(currentPage)).replace("{next_page}", String.valueOf(nextPage)).replace("{max_pages}", String.valueOf(maxPages))).collect(Collectors.toList()));
+                List<Component> lore = meta.lore();
+                if (lore != null) {
+                    meta.lore(lore.stream().map(c -> {
+                        String line = PlainTextComponentSerializer.plainText().serialize(c);
+                        return color(line.replace("{previous_page}", String.valueOf(prevPage)).replace("{current_page}", String.valueOf(currentPage)).replace("{next_page}", String.valueOf(nextPage)).replace("{max_pages}", String.valueOf(maxPages)));
+                    }).collect(Collectors.toList()));
+                }
             }
             item.setItemMeta(meta);
         }
